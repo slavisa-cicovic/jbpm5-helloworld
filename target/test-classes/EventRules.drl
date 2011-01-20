@@ -1,0 +1,19 @@
+import org.drools.event.process.ProcessStartedEvent;
+
+
+declare ProcessStartedEvent
+  @role( event )
+end
+
+dialect "mvel"
+
+rule "Spike alert: More than 100 processes started in less than one hour "
+when
+Number( nbProcesses : intValue > 100 )
+  from accumulate(
+    e: ProcessStartedEvent( processInstance.processId == "com.plugtree.jbpm5.edbpm.demo.LoanProcess"  )
+    over window:size(1h),
+    count(e) )
+then
+System.err.println( "WARNING: Number of Loan applications in the last hour above 100: " + nbProcesses );
+end
