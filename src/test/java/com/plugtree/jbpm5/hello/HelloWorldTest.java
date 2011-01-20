@@ -23,45 +23,47 @@ import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.junit.Test;
 
-
 public class HelloWorldTest {
 
-@Test
-public void testEDPBM() {
-    try {
+	@Test
+	public void testEDPBM() {
+		try {
 			// load up the processes knowledge base
 			KnowledgeBase kbase = readKnowledgeBase();
-			//the following properties are needed as jBPM5 own POM uses Drools 5.2.0-alpha1 as a dependency instead of the latest version
+			// the following properties are needed as jBPM5 own POM uses Drools
+			// 5.2.0-alpha1 as a dependency instead of the latest version
 			Properties properties = new Properties();
-		    properties.put("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
-	        properties.put("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
-	        KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
-	        	
-			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(config, null);
-			// start a 101 processes to ensure that the temporal rules will fire up
-				ksession.startProcess("com.plugtree.jbpm5.edbpm.demo.LoanProcess");	
+			properties.put("drools.processInstanceManagerFactory",
+					DefaultProcessInstanceManagerFactory.class.getName());
+			properties.put("drools.processSignalManagerFactory",
+					DefaultSignalManagerFactory.class.getName());
+			KnowledgeSessionConfiguration config = KnowledgeBaseFactory
+					.newKnowledgeSessionConfiguration(properties);
+
+			StatefulKnowledgeSession ksession = kbase
+					.newStatefulKnowledgeSession(config, null);
+			ksession.startProcess("com.plugtree.jbpm5.edbpm.demo.LoanProcess");
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-		
+
 	}
-	
+
 	private static KnowledgeBase readKnowledgeBase() throws Exception {
 
-        ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
-        ProcessMarshallerFactory.setProcessMarshallerFactoryService(new ProcessMarshallerFactoryServiceImpl());
-        ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
-        BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
-        
-       
-        
-//      
-//        properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
-//        properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("loan.bpmn"), ResourceType.BPMN2);
+		ProcessBuilderFactory
+				.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
+		ProcessMarshallerFactory
+				.setProcessMarshallerFactoryService(new ProcessMarshallerFactoryServiceImpl());
+		ProcessRuntimeFactory
+				.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
+		BPMN2ProcessFactory
+				.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+				.newKnowledgeBuilder();
+		kbuilder.add(ResourceFactory.newClassPathResource("loan.bpmn"),
+				ResourceType.BPMN2);
 		return kbuilder.newKnowledgeBase();
 	}
-	
+
 }
